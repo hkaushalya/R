@@ -1,0 +1,102 @@
+Titanic Prediction using ctree
+========================================================
+
+Going to build two models. 
+1. For complete records
+2. Missing data records
+
+```{r}
+rm(list=ls())
+#load libraries
+library(lattice)
+library(party)
+
+source('imputeNA.R')
+
+# read train and test data
+train <- read.csv('train.csv', header = T)
+test  <- read.csv('test.csv' , header = T)
+
+# converts 'Survived' to factors -----------------------------------------
+train[,2] <- as.factor(train[,2])
+test[,2]  <- as.factor(test[,2])
+
+
+# list rows of data that have missing values 
+count.all.train <- nrow(train)
+count.na.train  <- nrow( train[ ! complete.cases(train) , ] )
+pct.na.train    <- count.na.train * 100 / count.all.train
+cat('There are ', count.na.train, 'NAs ', round(pct.na.train,1) ,'% (total =', count.all.train ,') in train dataset!')
+
+train.complete   <- train[ complete.cases(train), ]
+train.incomplete <- train[ ! complete.cases(train), ]
+test.complete    <- test[ complete.cases(test), ]
+test.incomplete  <- test[ ! complete.cases(test), ]
+
+hist(train$Age, n = 25, probability = TRUE, border = "white", col = "steelblue")
+
+
+# Replace NAs in Age with sampling of Age distribution --------------------
+
+set.seed(94746)
+
+# The imputation of NA from test data does not seem to improve
+# the predictions.
+
+#n.incomp.age <- length(train.incomplete$Age[is.na(train.incomplete$Age))
+train.incomplete$Age[is.na(train.incomplete$Age)]   <- sample(train.complete$Age, size=1, replace=TRUE)
+train.incomplete$Fare[is.na(train.incomplete$Fare)] <- imputeNA(train.incomplete$Fare, fill="randomsample")
+train.incomplete$Pclass[is.na(train.incomplete$Pclass)] <- imputeNA(train.incomplete$Pclass, fill="randomsample")
+train.incomplete$Sex[is.na(train.incomplete$Sex)] <- imputeNA(train.incomplete$Sex, fill="randomsample")
+
+test.incomplete$Age[is.na(test.incomplete$Age)]   <- imputeNA(test.incomplete$Age, fill="randomsample")
+test.incomplete$Fare[is.na(test.incomplete$Fare)] <- imputeNA(test.incomplete$Fare, fill="randomsample")
+test.incomplete$Pclass[is.na(test.incomplete$Pclass)] <- imputeNA(test.incomplete$Pclass, fill="randomsample")
+test.incomplete$Sex[is.na(test.incomplete$Sex)] <- imputeNA(test.incomplete$Sex, fill="randomsample")
+
+
+#par(mfrow=c(1,2))
+#hist(train.est$Age, n=25, probability=T)
+#hist(test$Age, n=25, probability=T)
+
+
+# Train and tune randomForest model --------------------------------------
+ct1 <- ctree(Survived ~ Sex * Age * Pclass * SibSp * Fare, data = train.complete)
+ct2 <- ctree(Survived ~ Sex * Age * Pclass * SibSp * Fare, data = train.incomplete)
+
+treeresponse(ct1)   # returns the probabilities of the outcomes for each test data item 
+treeresponse(ct2)
+tapply(treeresponse(ct1), where(ct1), unique)
+
+plot(ct1)
+plot(ct2)
+#confint(ct)
+
+
+# Prepare Final Output for a file -----------------------------------------
+test.complete$Pclass <- as.integer(test.complete$Pclass)
+test.incomplete$Pclass <- as.integer(test.incomplete$Pclass)
+
+Survived.part1 <- predict(ct1, test.complete)
+Survived.part2 <- predict(ct2, test.incomplete)
+PassId.part1   <- test.complete$PassengerId
+PassId.part2   <- test.incomplete$PassengerId
+
+
+df.part1 <- data.frame(cbind(PassId.part1, Survived.part1))
+df.part2 <- data.frame(cbind(PassId.part2, Survived.part2))
+names(df.part1) <- c('PassengerId', 'Survived')
+names(df.part2) <- c('PassengerId', 'Survived')
+
+df.final <-rbind(df.part1, df.part2)
+head(df.final)
+df.final2 <- df.final[order(df.final$PassengerId),]
+head(df.final2)
+df.final2$Survived <- as.numeric(df.final2$Survived) - 1
+#print(test.cp$Survived)
+#write.csv(test.cp, file='ct_NAtreated_bimodel.csv', row.names = F, quote =FALSE )
+write.csv(df.final2, file='ct_NAtreated_bimodel.csv', row.names = F, quote =FALSE )
+str(df.final2)
+
+```
+
