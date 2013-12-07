@@ -5,4 +5,4 @@
 *-Ex.R
 
 # RData temp files
-*.RData
+.RData
