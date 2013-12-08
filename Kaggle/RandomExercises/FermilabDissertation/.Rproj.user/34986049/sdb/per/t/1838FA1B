@@ -1,0 +1,16 @@
+{
+    "contents" : "NumOfCountries <- function(vec) {\n  return(length(unique(vec))) \n}\n\nGradByCountry<-function(inst, recs) {\n  countries <- unique(inst)\n  counts    <- c(rep(0,length(countries)))\n  \n  for (i in 1:length(recs)) {\n    srchstr <- recs[i]\n    for (j in 1:length(countries)) {\n      ind <- grep(countries[j], srchstr)\n      print(ind)\n      if (nchar(ind) ==0) next \n      if (ind>=1) break  #first hit\n    }\n\n    if (ind>=1 & ind<=length(counts)) counts[ind] <- counts[ind]+1\n    print(srchstr,'->', countries[ind])\n  }\n  \n  print(cbind(countries,counts))\n}\n\n\ndf<-read.csv('data/preprocess1.csv', header=T)\nhist(df$grad.year, xlab='Year', ylab='Number of Graduates', \n     main='Number of Graduated from CDF with a MS or PhD',col='blue')\n#str(df)\n\ndf.inst <- read.csv('data/CDFInstitutions.csv',skip=2,header=T)\ndf.inst\nprint(NumOfCountries(df.inst$country))\nlibrary(ggplot2)\nplot(df$)\nlibrary(lattice)\nplot(df$grad.year, df$grad.month,col=rgb(100,0,0,,maxColorValue=255),pch=5)\n#image(df$grad.year, df$grad.month,col=rgb(100,0,0,,maxColorValue=255),pch=5)\n\nlibrary(scatterplot3d)\n#include number of grads per month\nscatterplot3d(df$grad.year, df$grad.month,pch=16, highlight.3d=TRUE,type=\"h\")\ngrad.by.country <- GradByCountry(df.inst$country, df$institution)\n",
+    "created" : 1384489290097.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "665838837",
+    "id" : "1838FA1B",
+    "lastKnownWriteTime" : 1384902157,
+    "path" : "~/Documents/Personal/Samantha/LearningMaterials/IntroToR/RandomExercises/FermilabDissertation/GradRateByYearMonth.R",
+    "properties" : {
+        "tempName" : "Untitled3"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

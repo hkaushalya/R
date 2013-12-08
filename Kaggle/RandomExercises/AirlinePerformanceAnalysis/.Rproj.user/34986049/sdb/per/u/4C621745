@@ -1,0 +1,16 @@
+{
+    "contents" : "# Study of delays by airport\n\nrm(list=ls())\nload('data/2008_ORD.Rda')\n\nlibrary(ggplot2)\nlibrary(psych)\n\n\nDelayFactor <- function(vec)\n{\n  t <- NULL\n  for (i in 1:length(vec)) {\n    x <- abs(vec[i])\n    slot <- NA\n    if (x>=0 & x< 15) slot = 1\n    else if (x>=15 & x<30) slot=2\n    else if (x>=30 & x<45) slot=3\n    else if (x>45) slot=4\n    \n    t[i]<-slot * ifelse(x>0,1,-1)  # early arrival will have negative factors\n  }\n  return (t)\n}\n\n\nairtimes.sorted<-airtimes[order(airtimes$Year, airtimes$Month, airtimes$DayofMonth),]\nhead(airtimes.sorted, n)\nstr(airtimes.sorted)\n\nats.dep <- subset(airtimes.sorted, Origin =='ORD' & UniqueCarrier=='XE' & Month==1)\nats.arr <- subset(airtimes.sorted, Dest =='ORD'  & UniqueCarrier=='XE' & Month==1)\n\n#time.slots <- c(0,15,30,45,60,10000)  # minutes\n#airtimes.sorted$DepDelay.factor <- DelayFactor(airtimes.sorted$DepDelay)\n#airtimes.sorted$ArrDelay.factor <- DelayFactor(airtimes.sorted$ArrDelay)\n\n#months <- factor(rep(1:12))\n\n# count how many outboung flights for each month\n#outbound.flights.bymonth <- NULL\n#delayed.flights.bymonth <- NULL  #Number of flights delayed by 15/30/45,>60 min\n#for (m in months) {\n#  m.airtimes <- airtimes.sorted[airtimes.sorted$Month==m,]\n#  outbound.flights.bymonth[m] <- nrow(m.airtimes)\n#  \n#}\n\n\n#plot(outbound.flights.bymonth)\n#boxplot(outbound.flights.bymonth)\n\n#ggplot(data=NULL, aes(y=outbound.flights.bymonth, x=months,fill=months, stat=\"identity\")) + \n#  labs(title=list(x='Month',y='Number of Flights',title='ORD: Number of Flights by Month in 2008 ')) +\n#  geom_bar()\n\n#delay factor generation\n#airtimes.sorted$ArrDelayFactor <- DelayFactor(airtimes.sorted$ArrDelay)\n#airtimes.sorted$DepDelayFactor <- DelayFactor(airtimes.sorted$DepDelay)\n\n#hist(f[,1])\n\n#january flight from ORD\ntot.dep <- nrow(ats.dep)\n#need to ignore some of cacellation etc.\nnlate.dep <- nrow(ats.dep[ats.dep$DepDelay>=15,])\n#this is less than what is on the web. probably the denominator need more cleaning!\n\npct.late.dep <- nlate.dep * 100/ tot.dep\n",
+    "created" : 1385142103050.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "972307633",
+    "id" : "4C621745",
+    "lastKnownWriteTime" : 0,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled4"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

@@ -1,0 +1,16 @@
+{
+    "contents" : "#OpenIntro.org labs\nrm(list=ls())\nsource(\"http://www.openintro.org/stat/data/arbuthnot.R\")\nplot(x=arbuthnot$year, y = arbuthnot$girls, type=\"l\")\narbuthnot$boys + arbuthnot$girls\nplot(x=arbuthnot$year, y = arbuthnot$girls + arbuthnot$boys, type=\"l\")\n#fraction B/G\nplot(x=arbuthnot$year, y = arbuthnot$boys / arbuthnot$girls, type=\"l\")\npar(mfrow=c(1,2))\nboxplot(arbuthnot$boys)\nboxplot(arbuthnot$girls)\npar(mfrow=c(1,1))\nplot(arbuthnot$boys, col='red', type='l')\npoints(arbuthnot$girls, col='blue',type='l')\narbuthnot[which(arbuthnot$boys > arbuthnot$girls),]\n\nsource(\"http://www.openintro.org/stat/data/present.R\")\nstr(present)\n\nplot(x=present$year, y=present$boys, col='red',type='l', lty=2)\npoints(x=present$year, y=present$girls, col='blue',type='l', lty=2)\n\n\n#compare the two era\nplot(arbuthnot$boys / arbuthnot$girls, type=\"l\")\npoints(present$boys / present$girls, type=\"l\")\n\n\n",
+    "created" : 1382736882721.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3479864755",
+    "id" : "D09FCD3",
+    "lastKnownWriteTime" : 4387251600,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

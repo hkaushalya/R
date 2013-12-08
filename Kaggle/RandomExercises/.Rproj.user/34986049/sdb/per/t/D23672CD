@@ -1,0 +1,16 @@
+{
+    "contents" : "# Bootstrapping\n# http://www.statmethods.net/advstats/bootstrapping.html\n\n# Bootstrapping a Single Statistic (k=1)  ====================\n# The following example generates the bootstrapped 95% \n# confidence interval for R-squared in the linear regression\n# of miles per gallon (mpg) on car weight (wt) and \n# displacement (disp). The data source is mtcars. The \n# bootstrapped confidence interval is based on 1000 replications.\n# Bootstrap 95% CI for R-Squared\nlibrary(boot)\n# function to obtain R-Squared from the data \nrsq <- function(formula, data, indices) {\n  d <- data[indices,] # allows boot to select sample \n  fit <- lm(formula, data=d)\n  return(summary(fit)$r.square)\n} \n# bootstrapping with 1000 replications \nresults <- boot(data=mtcars, statistic=rsq, \n                R=10, formula=mpg~wt+disp)\n\n# view results\nresults \nstr(results)\nsummary(results)\nplot(results)\n\n# get 95% confidence interval \nboot.ci(results, type=\"bca\")",
+    "created" : 1384818793256.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3004958965",
+    "id" : "D23672CD",
+    "lastKnownWriteTime" : 1384878099,
+    "path" : "~/Documents/Personal/Samantha/LearningMaterials/IntroToR/RandomExercises/Exe_Bootstraping.R",
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

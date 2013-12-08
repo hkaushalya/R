@@ -1,0 +1,16 @@
+{
+    "contents" : "Airline on-time performance analysis (http://stat-computing.org/dataexpo/2009/)\n========================================================\nThis was a old competion I found online and I am trying to reproduce some the\nfidings. There were only 9! submission which is surprising given the amount\nof buzz about Big Data! May be the insentive is too small :) .\n\n\nGoals for this analysis:\n======================================================\n\n\nMajor Goals:\nThe aim of the data expo is to provide a graphical summary of important features of the data set. This is intentionally vague in order to allow different entries to focus on different aspects of the data, but here are a few ideas to get you started:\n\n1. When is the best time of day/day of week/time of year to fly to minimise delays?\n2. Do older planes suffer more delays?\n3. How does the number of people flying between different locations change over time?\n4. How well does weather predict plane delays?\n5. Can you detect cascading failures as delays in one airport create delays in others? Are there critical links in the system?\n\nNote: You are also welcome to work with interesting subsets: you might want to compare flight patterns before and after 9/11, or between the pair of cities that you fly between most often, or all flights to and from a major airport like Chicago (ORD)\n\nMinor Goals\n=================================================\n1. Study fight delays across the US\n1.1 Which airport/carrier has the highest/fewest delays.\n1.2\n\n2. Is flight incoming/outgoing delays differ significantly?\n2.1 What may be the cause? (weather:cross winds, snow)\n2.2 Is there a clear seasonal effect? (which you would expect)\n\n3. Can we predic the average expected delay based on airport/weather/carrier?\n\n\n```{r}\nload('data/2008.Rda')\nsummaryBy(airtimes, airtimes$Month)\n```\n\nYou can also embed plots, for example:\n\n```{r fig.width=7, fig.height=6}\nplot(cars)\n```\n\nObservations\n==================================================\n1. The plot of delay (Arrival and Departure) shows early departures! I am not entirely sure of the causes: Weather, (re)-scheduling?, Additions\n\n\n\n",
+    "created" : 1384977073079.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2510682459",
+    "id" : "AA96B1B1",
+    "lastKnownWriteTime" : 1385059194,
+    "path" : "~/Documents/Personal/Samantha/LearningMaterials/IntroToR/RandomExercises/AirlinePerformanceAnalysis/doc/AnalysisTargets.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}

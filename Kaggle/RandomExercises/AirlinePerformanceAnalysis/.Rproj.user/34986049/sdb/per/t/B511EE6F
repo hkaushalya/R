@@ -1,0 +1,16 @@
+{
+    "contents" : "# This is to reduce the memory requirement when processing\n# by removing unwanted data.\nrm(list=ls())\n\nGenerateRdata <- function(years)\n{ \n  print(cat('GenerateRdata: Skimming all data files:'))\n  for (yr in years) {\n    filename <- paste0('data/',yr,'.csv')\n    savefile <- paste0('data/',yr,'.Rda')\n    print(filename)\n    if (file.exists(filename)) {\n      print(cat('Processing file:', filename, '\\n'))\n      airtimes <- read.csv(filename)\n    } else {\n      print(cat('File not found:', filename, '. Skipping ...\\n'))\n      next\n    }\n    \n    airtimes$FlightNum <- NULL\n    airtimes$TailNum <- NULL\n    airtimes$ActualElapsedTime <- NULL\n\n    print(cat('Saving data to ', savefile,'\\n'))\n    save(airtimes, file=savefile)\n    \n    rm (filename, savefile, airtimes)\n  }\n}\n\n#list of years corresponding to the data available\nyears <- c(2008)\nGenerateRdata(years)\n",
+    "created" : 1384982503137.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4216675176",
+    "id" : "B511EE6F",
+    "lastKnownWriteTime" : 1384988077,
+    "path" : "~/Documents/Personal/Samantha/LearningMaterials/IntroToR/RandomExercises/AirlinePerformanceAnalysis/rawcode/skimairtimes.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
