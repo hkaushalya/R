@@ -1,0 +1,16 @@
+{
+    "contents" : "library(\"doMC\")\nlibrary(\"randomForest\")\ndata(iris)\n\nregisterDoMC(4) #number of cores on the machine\ndarkAndScaryForest <- foreach(y=seq(10), .combine=combine ) %dopar% {\n  set.seed(y) # not really needed\n  rf <- randomForest(Species ~ ., iris, ntree=1000, norm.votes=FALSE)\n}\n\n",
+    "created" : 1383964007833.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3844755974",
+    "id" : "48B970A0",
+    "lastKnownWriteTime" : 8241980170156638214,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

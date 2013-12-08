@@ -1,0 +1,16 @@
+{
+    "contents" : "data.dir   <- './data/'\ntrain.file <- paste0(data.dir, 'training.csv')\ntest.file  <- paste0(data.dir, 'test.csv')\nprint(train.file)\nd.train <- read.csv(train.file, stringsAsFactors=F)\n\nim.train      <- d.train$Image\nd.train$Image <- NULL\n\n#as.integer(unlist(strsplit(im.train[1], \" \")))\n# im.train[1]\n\n# to speed up conversion of string->int \n# process using multicores\n# install.packages('doMC')\n\n# Load and register the library\nlibrary(doMC)\nregisterDoMC()\n\n# Implement Parallelization\nim.train <- foreach(im = im.train, .combine=rbind) %dopar% {\n  as.integer(unlist(strsplit(im, \" \")))\n}\n\nd.test  <- read.csv(test.file, stringsAsFactors=F)\nim.test <- foreach(im = d.test$Image, .combine=rbind) %dopar% {\n  as.integer(unlist(strsplit(im, \" \")))\n}\n\nd.test$Image <- NULL\n\n# save these as R data files so we do not need to reprocess\nsave(d.train, im.train, d.test, im.test, file='data.Rd')\n\n\n",
+    "created" : 1383937613187.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3420461795",
+    "id" : "B0DD6A09",
+    "lastKnownWriteTime" : 1383940425,
+    "path" : "~/Documents/Personal/Samantha/LearningMaterials/IntroToR/KaggleCompetitions/FacialKeypointsDetection/preprocess.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

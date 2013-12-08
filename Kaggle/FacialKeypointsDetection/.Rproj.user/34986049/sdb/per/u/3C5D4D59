@@ -1,0 +1,16 @@
+{
+    "contents" : "#image patch study\nlibrary(doMC)\nregisterDoMC()\n\nload('data.Rd')\ncoord      <- \"left_eye_center\"\npatch_size <- 10\n\ncoord_x <- paste(coord, \"x\", sep=\"_\")\ncoord_y <- paste(coord, \"y\", sep=\"_\")\npatches <- foreach (i = 1:nrow(d.train), .combine=rbind) %do% {\n  im  <- matrix(data = im.train[i,], nrow=96, ncol=96)\n  x   <- d.train[i, coord_x]\n  y   <- d.train[i, coord_y]\n  x1  <- (x-patch_size)\n  x2  <- (x+patch_size)\n  y1  <- (y-patch_size)\n  y2  <- (y+patch_size)\n  if ( (!is.na(x)) && (!is.na(y)) && (x1>=1) && (x2<=96) && (y1>=1) && (y2<=96) )\n  {\n    as.vector(im[x1:x2, y1:y2])\n  }\n  else\n  {\n    NULL\n  }\n}\nmean.patch <- matrix(data = colMeans(patches), nrow=2*patch_size+1, ncol=2*patch_size+1)\n\nimage(1:21, 1:21, mean.patch[21:1,21:1], col=gray((0:255)/255))\n\n# search_size indicates how many pixels we are going to move in each direction\n# when searching for the keypoint.\nsearch_size <- 2\n\nmean_x <- mean(d.train[, coord_x], na.rm=T)\nmean_y <- mean(d.train[, coord_y], na.rm=T)\nx1     <- as.integer(mean_x)-search_size\nx2     <- as.integer(mean_x)+search_size\ny1     <- as.integer(mean_y)-search_size\ny2     <- as.integer(mean_y)+search_size\n\n# In this particular case the search will be from (64,35) to (68,39). \n# We can use expand.grid to build a data frame with all combinations of\n# x's and y's:\nparams <- expand.grid(x = x1:x2, y = y1:y2)\nparams\n\n# Given a test image we need to try all these combinations, and see which \n# one best matches the average_patch. We will do that by taking patches of the \n# test images around these points and measuring their correlation with the\n# average_patch. Take the first test image as an example:\nim <- matrix(data = im.test[1,], nrow=96, ncol=96)\n\nr  <- foreach(j = 1:nrow(params), .combine=rbind) %dopar% {\n  x     <- params$x[j]\n  y     <- params$y[j]\n  p     <- im[(x-patch_size):(x+patch_size), (y-patch_size):(y+patch_size)]\n  score <- cor(as.vector(p), as.vector(mean.patch))\n  score <- ifelse(is.na(score), 0, score)\n  data.frame(x, y, score)\n}\n\n\n#Now all we need to do is return the coordinate with the highest score:\n  \nbest <- r[which.max(r$score), c(\"x\", \"y\")]\nbest\n",
+    "created" : 1384200261679.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2486912925",
+    "id" : "3C5D4D59",
+    "lastKnownWriteTime" : 4653366912,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
