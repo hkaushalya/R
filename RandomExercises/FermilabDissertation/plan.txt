@@ -1,0 +1,12 @@
+A) simple project:
+1. Count number of occurances of Quark/W/Z boson, photon,Higgs in CDF notes
+2. Can you guess the title by looking at these key words frequency! at least some of the words in the title
+2.1 May the words found in the Introduction/Results can be weighted more for this
+
+
+B) Categorize each as SM/SUSY based on the words used in the note
+1. Use SUSY/SM notes for training a tree and predic a note 
+2. May be I can try using only the abstract first. Then the whole note.
+3. Then reduce the information from only the first line in the abstract( or title)
+
+

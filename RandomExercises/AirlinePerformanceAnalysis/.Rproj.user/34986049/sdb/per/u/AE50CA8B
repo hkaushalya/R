@@ -1,0 +1,16 @@
+{
+    "contents" : "library(ggplot2)\ndat <- data.frame(xx = c(runif(100,20,50),runif(100,40,80),runif(100,0,30)),yy = rep(letters[1:3],each = 100))\nstr(dat)\nboxplot(dat$xx)\nhist(dat$xx)\nsummary(dat$xx)\ndat$xx\nggplot(dat,aes(x=xx)) + \n  geom_histogram(data=subset(dat,yy == 'a'),fill = \"red\", alpha = 0.2) +\n  geom_histogram(data=subset(dat,yy == 'b'),fill = \"blue\", alpha = 0.2) +\n  geom_histogram(data=subset(dat,yy == 'c'),fill = \"green\", alpha = 0.2)\n\nggplot(dat, aes(x=xx, y=yy)) + geom_boxplot()\n\nlibrary(psych)\ndescribe(diamonds)\nqplot(carat, data=diamonds, geom=\"histogram\")+\ngeom(clarity, data=diamonds, geom=\"histogram\")\n\nx<-c(rep(0,5))\ny<-c(rep(1,5))\n\nz<-\n",
+    "created" : 1384995261209.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2063929919",
+    "id" : "AE50CA8B",
+    "lastKnownWriteTime" : 2947969906044390729,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

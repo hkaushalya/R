@@ -1,0 +1,16 @@
+{
+    "contents" : "\nrm(list=ls())\nlibrary(maps)\nlibrary(ggplot2)\n\n  all_states <- map_data(\"state\")\n  head(all_states)\n  names <- names(all_states)\n  names\n  #names[5] <- 'State'    # to match with what I have is data files\n  #names(all_states) <- names\n  \n  filename <- sprintf('data/CDFInstitutions.csv')\n  print(filename)\n  if (file.exists(filename)) {\n    #pop.data <- read.csv('CDCPopulationData/StatePopulations2000.csv')\n    pop.data <- read.csv(filename, skip=2, header=T) \n  } else {\n    msg <- sprintf('A data file for the year %i is not found!', year)\n    stop(msg)\n  }\n  \n  head(pop.data)\n  #str(pop.data)\n  \n  us.pop.data <- subset(pop.data, country==\"USA\")\n  us.pop.data$state <- tolower(us.pop.data$state)\n  head(us.pop.data)  \n\n  # merge the data with spatial data\n  com.data <- merge(us.pop.data, all_states, by='state')\n  #for some reason 2004 data seems to get some NAs after merge!!!!\n  # need to investigate. \n  \n  print(head(com.data))\n  \n  maintitle <- sprintf('US Instititions')\n  legtitle <- sprintf('Population')\n  cat ('trying ot make the plot\\n')\n  \n  savename <- sprintf('cdfdata.png', '\\n') \n  cat('printname: ', savename)\n  #dev.copy(png, printname)\n  #dev.off()\n  #jpeg(savename)\n  #dev.off()\n  #jpeg(file=savename, width=40, height=20)\n  \n  p <- ggplot()\n  # It seems have the data.frame inside 'aes' is very bad!\n  # results in this error 'Error in eval(expr, envir, enclos) : object 'com.data' not found' \n  # and does not save the file\n  #    p <- p + geom_polygon(data=com.data, aes(x=long, y=lat, group = group, fill=com.data$Total),colour=\"white\") + scale_fill_continuous(low = \"thistle2\", high = \"darkred\", guide=\"colorbar\")\n  p <- p + geom_polygon(data=com.data, aes(x=long, y=lat, group = group, fill=c(1:nrow(com.data)) ,xlab=''),colour=\"white\") + scale_fill_continuous(low = \"thistle2\", high = \"darkred\", guide=\"colorbar\")\n  P1 <- p + theme_bw()  + labs(fill = legtitle \n                               ,title = \"Test ttitle\", x=\"\", y=\"\")\n  P1 + scale_y_continuous(breaks=c()) + scale_x_continuous(breaks=c()) + theme(panel.border =  element_blank())\n  \n  #ggsave(filename=savename, plot=p, width = 10, height = 8)",
+    "created" : 1384548834221.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3858285643",
+    "id" : "169ABA7E",
+    "lastKnownWriteTime" : 0,
+    "path" : null,
+    "properties" : {
+        "tempName" : "Untitled3"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
