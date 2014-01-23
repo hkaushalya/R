@@ -1,0 +1,103 @@
+party: A Laboratory for Recursive Partytioning
+========================================================
+This is to further understand the the ctree functionality. 
+I am following the party package manual.
+These are some of the examples in there.
+```{r}
+rm(list=ls())
+library(party)
+library(psych)
+data("treepipit", package="coin")
+str(treepipit)
+describeBy(treepipit, treepipit$Count)
+ct <- ctree(counts~., data=treepipit)
+```
+
+```{r fig.width=7, fig.height=6}
+plot(ct)
+plot(ct, terminal_panel = node_hist(ct, breaks=0:6-0.5, ymax=65,horizontal=FALSE, freq=TRUE))
+```
+
+#### Trying a Linear Model to confirm varible significance.
+
+```{r}
+lm.model <- lm(formula=counts~., data=treepipit)
+summary(lm.model)
+```
+
+Glucoma and laser scanning images
+==================================
+```{r}
+data("GlaucomaM", package="TH.data")
+#describeBy(GlaucomaM,group=GlaucomaM$Class)
+describe(GlaucomaM)
+str(GlaucomaM)
+gt <- ctree(Class ~., data=GlaucomaM, controls=ctree_control(minsplit=50))
+plot(gt)
+```
+
+#### Linear Model for the same
+```{r}
+data.GlaucomaM <- GlaucomaM
+data.GlaucomaM$Class <- as.numeric(data.GlaucomaM$Class)
+#g.lm <- lm(formula=Class ~ ., data=data.GlaucomaM)
+g.lm2 <- lm(formula=Class ~ vari * vasg * tms, data=data.GlaucomaM)
+#summary(g.lm)
+summary(g.lm2)
+```
+**Dropping** _tms_
+```{r}
+g.lm3 <- lm(formula=Class ~ vari * vasg, data=data.GlaucomaM)
+#summary(g.lm)
+summary(g.lm3)
+```
+
+**Looking at split statitics(verbatim from the text)**
+```{r fig.height=12}
+cex <- 1.6
+inner <- nodes(gt, c(1,2,5))
+layout(matrix(1:length(inner), nrow=length(inner)))
+out <- sapply(inner, function(i) {
+  splitstat <- i$psplit$splitstatistic
+  x <- data.GlaucomaM[[i$psplit$variableName]][splitstat>0]
+  plot(x, splitstat[splitstat >0], main = paste("Node", i$nodeID),
+       xlab= i$psplit$varibleName, ylab ="Statistic", ylim=c(0,10),
+       cex.axis = cex, cex.lab = cex, cex.main=cex)
+  abline(v=i$psplit$splitpoint, lty = 3)
+})
+```
+
+**Estimated conditional class probabilities**
+```{r}
+prob <- sapply(treeresponse(gt), function(x) x[1]) + runif(nrow(data.GlaucomaM), min=-0.01, max=0.01)
+splitvar <- nodes(gt, 1)[[1]]$psplit$variableName
+plot(data.GlaucomaM[[splitvar]], prob, pch = as.numeric(data.GlaucomaM$Class), col= as.numeric(data.GlaucomaM$Class), ylab = "Conditional Class Prob.", xlab = splitvar)
+abline(v=nodes(gt, 1)[[1]]$psplit$splitpoint, lty=2)
+legend(0.15, 0.7, pch=1:2, col=1:2, legend = levels(GlaucomaM$Class), bty="n")
+```
+
+**Predictions for the learning class;**
+```{r}
+table(Predict(gt), GlaucomaM$Class)
+```
+
+Node positive breast cancer
+===========================
+
+```{r}
+data("GBSG2", package="TH.data")
+str(GBSG2)
+help(GBSG2)
+
+describeBy(GBSG2, group=list(GBSG2$tgrade, GBSG2$menostat))
+
+library(ggplot2)
+sp <- ggplot(data=GBSG2, aes(x=time,y=age)) + geom_point()
+sp <- sp + facet_grid(menostat ~ tgrade) + ylab("Age") + xlab("Recurrence free survival time (days)")
+sp
+
+#stree <- ctree(Surv(time, cens) ~ ., data=GBSG2)
+#plot(stree)
+
+```
+
