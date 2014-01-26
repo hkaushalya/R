@@ -1,5 +1,6 @@
 Discriminant Function Analysis 
 ========================================================
+From: http://www.statmethods.net/advstats/discriminant.html
 
 Linear Discriminant Analysis with Jacknifed Prediction
 -------------------------------------------------------
@@ -29,12 +30,12 @@ Quadratic Discriminant Function
 
 Quadratic Discriminant Analysis with 3 groups applying resubstitution prediction and equal prior probabilities.
 ```{r}
-fit <- qda(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data=na.omit(mydata), prior=c(1,1,1)/3)
-fit
-ct <- table(mydata$Species, fit$class)
-diag(prop.table(ct, 1))
+fit2 <- qda(Species ~ Sepal.Length + Sepal.Width + Petal.Length, data=na.omit(mydata), prior=c(1,1,1)/3)
+fit2
+ct2 <- table(mydata$Species, predict(fit2,mydata)$class)
+diag(prop.table(ct2, 1))
 #total percent correct
-sum(diag(prop.table(ct)))
+sum(diag(prop.table(ct2)))
 ```
 
 Visualizing the Results
@@ -42,8 +43,23 @@ Visualizing the Results
 Scatter plot using the 1st two discriminant dimensions
 
 ```{r}
-plot(fit) # fit from lda ??? did not work
+plot(fit2) # fit from lda ??? did not work
 # Panels of histograms and overlayed density plots
 # for 1st discriminant function
-plot(fit, dimen=1, type="both") # fit from lda 
+plot(fit2, dimen=1, type="both") # fit from lda #does not work with the plot function!!!
+```
+
+The partimat( ) function in the klaR package can display the results of a linear or quadratic classifications 2 variables at a time.
+
+Exploratory Graph for LDA or QDA
+```{r}
+library(klaR)
+partimat(Species ~ Sepal.Length + Sepal.Width + Petal.Length,data=mydata,method="lda")
+```
+
+You can also produce a scatterplot matrix with color coding by group.
+
+Scatterplot for 3 Group Problem
+```{r}
+pairs(mydata[c("Sepal.Length", "Sepal.Width","Petal.Length")], main="Iris data", pch=22,bg=c("red", "yellow", "blue")[unclass(mydata$Species)]) 
 ```

@@ -1,8 +1,9 @@
 Discriminant Function Analysis 
 ========================================================
+From: http://www.statmethods.net/advstats/discriminant.html
 
 Linear Discriminant Analysis with Jacknifed Prediction
-
+-------------------------------------------------------
 
 ```r
 library(MASS)
@@ -251,4 +252,109 @@ sum(diag(prop.table(ct)))
 ```
 ## [1] 0.96
 ```
+
+
+** To Do: do a MANOVA for significance test. ** 
+
+Quadratic Discriminant Function
+-------------------------------
+
+Quadratic Discriminant Analysis with 3 groups applying resubstitution prediction and equal prior probabilities.
+
+```r
+fit2 <- qda(Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = na.omit(mydata), 
+    prior = c(1, 1, 1)/3)
+fit2
+```
+
+```
+## Call:
+## qda(Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = na.omit(mydata), 
+##     prior = c(1, 1, 1)/3)
+## 
+## Prior probabilities of groups:
+##     setosa versicolor  virginica 
+##     0.3333     0.3333     0.3333 
+## 
+## Group means:
+##            Sepal.Length Sepal.Width Petal.Length
+## setosa            5.006       3.428        1.462
+## versicolor        5.936       2.770        4.260
+## virginica         6.588       2.974        5.552
+```
+
+```r
+ct2 <- table(mydata$Species, predict(fit2, mydata)$class)
+diag(prop.table(ct2, 1))
+```
+
+```
+##     setosa versicolor  virginica 
+##       1.00       0.92       0.92
+```
+
+```r
+# total percent correct
+sum(diag(prop.table(ct2)))
+```
+
+```
+## [1] 0.9467
+```
+
+
+Visualizing the Results
+-----------------------
+Scatter plot using the 1st two discriminant dimensions
+
+
+```r
+plot(fit2)  # fit from lda ??? did not work
+```
+
+```
+## Error: 'x' is a list, but does not have components 'x' and 'y'
+```
+
+```r
+# Panels of histograms and overlayed density plots for 1st discriminant
+# function
+plot(fit2, dimen = 1, type = "both")  # fit from lda #does not work with the plot function!!!
+```
+
+```
+## Error: 'x' is a list, but does not have components 'x' and 'y'
+```
+
+
+The partimat( ) function in the klaR package can display the results of a linear or quadratic classifications 2 variables at a time.
+
+Exploratory Graph for LDA or QDA
+
+```r
+library(klaR)
+```
+
+```
+## Warning: package 'klaR' was built under R version 3.0.2
+```
+
+```r
+partimat(Species ~ Sepal.Length + Sepal.Width + Petal.Length, data = mydata, 
+    method = "lda")
+```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-61.png) ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-62.png) 
+
+
+You can also produce a scatterplot matrix with color coding by group.
+
+Scatterplot for 3 Group Problem
+
+```r
+pairs(mydata[c("Sepal.Length", "Sepal.Width", "Petal.Length")], main = "Iris data", 
+    pch = 22, bg = c("red", "yellow", "blue")[unclass(mydata$Species)])
+```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
 
